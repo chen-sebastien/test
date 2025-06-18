@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESDA人格分析 | 吟遊詩人</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: #f5f0e1 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.05"><rect fill="none" stroke="%237d5e3f" stroke-width="2" x="10" y="10" width="80" height="80" rx="15" ry="15"/></svg>');
+            color: #3c2f2d;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #f9f4e6;
+            border: 12px solid transparent;
+            border-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M10,10 L90,10 L90,90 L10,90 Z" fill="none" stroke="%237d5e3f" stroke-width="3"/></svg>') 30 round;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            position: relative;
+        }
+        
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.03"><path d="M20,20 Q50,5 80,20 T100,50 Q85,80 50,100 T0,50 Q15,20 50,0 T100,50" fill="none" stroke="%237d5e3f" stroke-width="1"/></svg>');
+            pointer-events: none;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px 0 30px;
+            border-bottom: 3px double #8c7355;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        header::after {
+            content: "✧";
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f9f4e6;
+            padding: 0 10px;
+            color: #8c7355;
+            font-size: 20px;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Cinzel', serif;
+            color: #5d4037;
+            font-weight: 700;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            font-size: 2rem;
+            color: #7d5e3f;
+            margin: 25px 0 15px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, #8c7355, transparent);
+        }
+        
+        h3 {
+            font-size: 1.6rem;
+            margin: 20px 0 10px;
+            color: #6b4f37;
+        }
+        
+        .personality-type {
+            font-size: 2.2rem;
+            color: #a52a2a;
+            margin: 5px 0;
+            letter-spacing: 4px;
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            font-style: italic;
+            color: #8c7355;
+            margin: 10px 0 20px;
+        }
+        
+        .summary-box {
+            background: #e8dfca;
+            border: 2px solid #c9b7a2;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        
+        .summary-box::before {
+            content: "❧";
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            font-size: 24px;
+            background: #f9f4e6;
+            padding: 0 10px;
+            color: #8c7355;
+        }
+        
+        .summary-formula {
+            font-size: 1.4rem;
+            text-align: center;
+            font-weight: 700;
+            color: #5d4037;
+            margin: 10px 0;
+            letter-spacing: 1px;
+        }
+        
+        .summary-text {
+            text-align: center;
+            font-size: 1.1rem;
+            margin: 15px 0 5px;
+            padding: 0 20px;
+        }
+        
+        /* 象限图样式 */
+        .quadrant-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+        }
+        
+        .quadrant-chart {
+            width: 500px;
+            height: 500px;
+            position: relative;
+            background: #f0e9d9;
+            border: 2px solid #c9b7a2;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .axis {
+            position: absolute;
+            background: #8c7355;
+        }
+        
+        .x-axis {
+            width: 100%;
+            height: 2px;
+            top: 50%;
+            left: 0;
+        }
+        
+        .y-axis {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            top: 0;
+        }
+        
+        .quadrant {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            font-weight: 600;
+            color: #5d4037;
+            font-size: 1.1rem;
+        }
+        
+        .q1 { top: 0; left: 50%; background: rgba(125, 94, 63, 0.1); }
+        .q2 { top: 0; left: 0; background: rgba(93, 64, 55, 0.1); }
+        .q3 { top: 50%; left: 0; background: rgba(140, 115, 85, 0.1); }
+        .q4 { top: 50%; left: 50%; background: rgba(165, 42, 42, 0.1); }
+        
+        .personality-point {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #a52a2a;
+            border: 3px solid #5d4037;
+            border-radius: 50%;
+            top: 30%;
+            left: 35%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(165, 42, 42, 0.5);
+        }
+        
+        /* 表格样式 */
+        .personality-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            font-size: 1.05rem;
+        }
+        
+        .personality-table th {
+            background: #8c7355;
+            color: #f9f4e6;
+            padding: 12px 15px;
+            text-align: left;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .personality-table td {
+            padding: 12px 15px;
+            border: 1px solid #c9b7a2;
+        }
+        
+        .personality-table tr:nth-child(even) {
+            background: #e8dfca;
+        }
+        
+        .personality-table tr:hover {
+            background: #e0d4ba;
+        }
+        
+        /* 内容区域样式 */
+        .description-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f3e7;
+            border-left: 4px solid #8c7355;
+        }
+        
+        .tendency-list {
+            list-style-type: none;
+            margin: 20px 0 20px 30px;
+        }
+        
+        .tendency-list li {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .tendency-list li::before {
+            content: "➺";
+            position: absolute;
+            left: 0;
+            color: #a52a2a;
+            font-size: 1.2rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0 20px;
+            margin-top: 30px;
+            border-top: 1px solid #c9b7a2;
+            color: #7d5e3f;
+            font-size: 0.9rem;
+        }
+        
+        .medieval-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 30px 0;
+            color: #8c7355;
+        }
+        
+        .medieval-divider::before,
+        .medieval-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #c9b7a2;
+        }
+        
+        .medieval-divider::before {
+            margin-right: 15px;
+        }
+        
+        .medieval-divider::after {
+            margin-left: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .personality-type {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1.4rem;
+            }
+            
+            .quadrant-chart {
+                width: 100%;
+                height: 350px;
+            }
+            
+            .quadrant {
+                font-size: 0.9rem;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>你的人格類型分析</h1>
+            <div class="personality-type">ESDA</div>
+            <div class="subtitle">暖心衝動者 · 吟遊詩人</div>
+        </header>
+        
+        <section class="summary-box">
+            <div class="summary-formula">ESDA = 高情緒感應 × 即興行動 × 依賴互動 × 冒險探索</div>
+            <p class="summary-text">具備快速啟動與情感連結優勢，但需留意決策穩定度與風險評估。</p>
+            <p class="summary-text">透過情緒標定、里程碑機制、固定風險檢核即可顯著提升持續績效。</p>
+        </section>
+        
+        <!-- 象限图 -->
+        <h2>人格特質象限分析</h2>
+        <div class="quadrant-container">
+            <div class="quadrant-chart">
+                <div class="axis x-axis"></div>
+                <div class="axis y-axis"></div>
+                
+                <div class="quadrant q1">
+                    感性維度<br>情緒波動即時反映在行動
+                </div>
+                <div class="quadrant q2">
+                    隨性維度<br>當下想法立即付諸實踐
+                </div>
+                <div class="quadrant q3">
+                    依賴維度<br>依賴互動取得安全感
+                </div>
+                <div class="quadrant q4">
+                    冒險維度<br>喜歡嘗試未知，對失敗容忍較高
+                </div>
+                
+                <div class="personality-point"></div>
+            </div>
+        </div>
+        
+        <div class="medieval-divider">人格特質分析</div>
+        
+        <!-- 人格特质表格 -->
+        <table class="personality-table">
+            <thead>
+                <tr>
+                    <th>向度</th>
+                    <th>具體特徵</th>
+                    <th>可能優勢</th>
+                    <th>可能挑戰</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>感性</td>
+                    <td>情緒波動即時反映在行動，能快速察覺他人情緒</td>
+                    <td>具高度同理與氛圍感染力</td>
+                    <td>情緒化決策，穩定度需留意</td>
+                </tr>
+                <tr>
+                    <td>隨性</td>
+                    <td>當下想法立即付諸實踐，不排斥臨時變動</td>
+                    <td>應變速度快，不僅化</td>
+                    <td>缺乏長程規劃，容易重工</td>
+                </tr>
+                <tr>
+                    <td>依賴</td>
+                    <td>依賴互動取得安全感，樂於尋求他人建議</td>
+                    <td>擅長協同、凝聚共識</td>
+                    <td>獨立決策時易遲疑</td>
+                </tr>
+                <tr>
+                    <td>冒險</td>
+                    <td>喜歡嘗試未知，對失敗容忍較高</td>
+                    <td>具探索與創新動能</td>
+                    <td>可能低估風險與成本</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="medieval-divider">人格深度分析</div>
+        
+        <!-- 人格描述 -->
+        <section class="description-section">
+            <h3>你是什麼樣的人？</h3>
+            <p>ESDA 型人格在面對任務時，往往由強烈的當下情緒驅動立即行動；他們不傾向預先設計周詳計畫，而是在現場依直覺快速調整路徑。對於人際互動具有高度需求，一旦獲得肯定便能火力全開，反之若缺乏支持則動能驟降。由於具備冒險精神，他們願意承擔未知風險並享受探索過程，能為團隊帶來活力與創新，但同時必須留意情緒化決策與風險評估不足所帶來的不穩定性。</p>
+        </section>
+        
+        <section>
+            <h3>你可能傾向這麼做！</h3>
+            <ul class="tendency-list">
+                <li><strong>決策傾向：</strong>受當下情緒與人際互動影響，非長期推演式邏輯建構。</li>
+                <li><strong>行動方式：</strong>不透過預排計畫，而是即時作反應與選擇。</li>
+                <li><strong>社會互動傾向：</strong>較少獨立判斷，會參考或仰賴他人的意見與情緒狀態。</li>
+                <li><strong>風險承受模式：</strong>願意主動面對未知、不穩定或未驗證的可能性。</li>
+            </ul>
+        </section>
+        
+        <footer>
+            <p>ESDA 人格分析報告 · 中世紀風格呈現</p>
+            <p>暖心衝動者 · 吟遊詩人</p>
+        </footer>
+    </div>
+</body>
+</html>
